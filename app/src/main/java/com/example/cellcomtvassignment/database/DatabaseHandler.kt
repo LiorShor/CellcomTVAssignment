@@ -1,12 +1,17 @@
 package com.example.cellcomtvassignment.database
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.lifecycle.MutableLiveData
 
 
 class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    private val isFavoritesListChanged : MutableLiveData<Boolean> = MutableLiveData<Boolean>()
     /**
      * Creating a simple table for favorites movies
      */
@@ -24,8 +29,51 @@ class DatabaseHandler(context: Context) :
         onCreate(db)
     }
 
-    fun addMovie(movieId : Int) {
+    fun addMovieToFavorites(movieId: Int): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(KEY_MOVIE_ID, movieId)
 
+        //Inserting row to the table
+        val success = db.insert(TABLE_CONTACTS, null, contentValues)
+
+        //closing the db connection
+        db.close()
+        isFavoritesListChanged.postValue(true)
+        return success
+    }
+
+    fun removeMovieFromFavorites(movieId: Int): Boolean {
+        val db = this.writableDatabase
+        isFavoritesListChanged.postValue(true)
+        return db.delete(TABLE_CONTACTS, "$KEY_MOVIE_ID=$movieId", null) > 0
+    }
+
+    fun readMoviesFromDatabase(): Set<Int> {
+        val returnedSet: HashSet<Int> = HashSet()
+        val selectQuery = "SELECT * FROM $TABLE_CONTACTS"
+        val db = this.readableDatabase
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(selectQuery, null)
+        } catch (exception: SQLiteException) {
+            db.execSQL(selectQuery)
+            return returnedSet
+        }
+        if (cursor.moveToFirst()) {
+            do {
+                returnedSet.add(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_MOVIE_ID)))
+            } while (cursor.moveToNext())
+        }
+        isFavoritesListChanged.postValue(true)
+        return returnedSet
+    }
+
+    fun getFavoritesList(): MutableLiveData<Set<Int>> {
+        val returnedSet: Set<Int> = readMoviesFromDatabase()
+        val data: MutableLiveData<Set<Int>> = MutableLiveData<Set<Int>>()
+        data.value = returnedSet
+        return data
     }
 
     companion object {
@@ -34,7 +82,6 @@ class DatabaseHandler(context: Context) :
         private const val DATABASE_VERSION = 1
         private const val KEY_ID = "_id"
         private const val KEY_MOVIE_ID = "movieId"
-
     }
 
 }

@@ -4,20 +4,26 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface MoviesApiService {
-
-    @GET("top_rated")
-    fun getMoviesAsync(
+    @GET("popular")
+    fun getPopularMoviesAsync(
         @Query("page") page: Int
     ): Deferred<MovieResponse>
 
+    @GET("now_playing")
+    fun getLatestMoviesAsync(
+        @Query("page") page: Int
+    ): Deferred<MovieResponse>
+
+    @GET("upcoming")
+    fun getUpcomingMoviesAsync(
+        @Query("page") page: Int
+    ): Deferred<MovieResponse>
     companion object {
         private const val API_KEY = "2c46288716a18fb7aadcc2a801f3fc6b"
         private const val URL = "http://api.themoviedb.org/3/movie/"

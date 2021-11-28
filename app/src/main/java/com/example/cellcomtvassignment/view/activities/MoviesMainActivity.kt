@@ -32,9 +32,7 @@ class MoviesMainActivity : AppCompatActivity(), OnMovieClickedListener {
     }
 
     fun showMoviesListFragment() {
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, MoviesListFragment()).commit()
+        onBackPressed()
     }
 
     override fun showMoviesDetailsFragment(movieId: Int?) {

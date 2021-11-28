@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.cellcomtvassignment.databinding.MovieItemBinding
 import com.example.cellcomtvassignment.model.Movie
-import com.example.cellcomtvassignment.model.Movies
 import java.util.*
 
 class MoviesAdapter(private val mOnMovieClickedListener: OnMovieClickedListener, private val mContext : Context) :
@@ -52,9 +51,16 @@ class MoviesAdapter(private val mOnMovieClickedListener: OnMovieClickedListener,
         }
     }
 
+    fun clear() {
+        val size = itemCount
+        mMoviesList.clear()
+        notifyItemRangeRemoved(0, size)
+    }
+
     fun setStatusesList(movies: List<Movie>) {
+        val size = itemCount
         mMoviesList.addAll(movies)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(size, itemCount)
     }
 
 }
