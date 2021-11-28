@@ -1,16 +1,17 @@
 package com.example.cellcomtvassignment.view.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.cellcomtvassignment.R
 import com.example.cellcomtvassignment.databinding.FragmentMovieDetailsBinding
+import com.example.cellcomtvassignment.view.activities.MoviesMainActivity
 import com.example.cellcomtvassignment.viewmodel.MovieDetailsViewModel
-import android.text.method.ScrollingMovementMethod
 
 
 class MovieDetails : Fragment() {
@@ -39,16 +40,26 @@ class MovieDetails : Fragment() {
                     .load("https://image.tmdb.org/t/p/original/${movie.posterPath}")
                     .into(mFragmentMovieDetailsBinding.movieImageView)
             }
-            if (movie.id?.let { it1 -> movieDetailsViewModel.isInFavorite(it1) } == true) {
-                mFragmentMovieDetailsBinding.backButton.setBackgroundResource(R.drawable.ic_full_star)
+            movieDetailsViewModel.isFavoritesListChanged()
+                .observe(viewLifecycleOwner, { t ->
+                    if (t)
+                        if (movie.id?.let { it1 -> movieDetailsViewModel.isInFavorite(it1) } == true) {
+                            mFragmentMovieDetailsBinding.favoritesImageButton.setImageResource(R.drawable.ic_full_star)
+                        }
+                })
+
+        }
+        mFragmentMovieDetailsBinding.favoritesImageButton.setOnClickListener {
+            if (movie?.id?.let { it1 -> movieDetailsViewModel.isInFavorite(it1) } == false) {
+                mFragmentMovieDetailsBinding.favoritesImageButton.setImageResource(R.drawable.ic_full_star)
+                movie.id.let { movieDetailsViewModel.addMovieToFavorites(movie) }
+            } else {
+                mFragmentMovieDetailsBinding.favoritesImageButton.setImageResource(R.drawable.ic_empty_star)
+                movie?.id?.let { movieDetailsViewModel.removeMovieFromFavorites(movie) }
             }
         }
         mFragmentMovieDetailsBinding.backButton.setOnClickListener {
-            if (movie?.id?.let { it1 -> movieDetailsViewModel.isInFavorite(it1) } == false) {
-                mFragmentMovieDetailsBinding.backButton.setBackgroundResource(R.drawable.ic_empty_star)
-            } else {
-                mFragmentMovieDetailsBinding.backButton.setBackgroundResource(R.drawable.ic_full_star)
-            }
+            (activity as MoviesMainActivity).showMoviesListFragment()
         }
     }
 

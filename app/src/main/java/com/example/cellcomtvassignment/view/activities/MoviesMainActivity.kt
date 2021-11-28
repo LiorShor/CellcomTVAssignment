@@ -1,22 +1,20 @@
 package com.example.cellcomtvassignment.view.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.Navigation
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.cellcomtvassignment.R
 import com.example.cellcomtvassignment.databinding.ActivityMoviesListBinding
-import com.example.cellcomtvassignment.model.Movie
 import com.example.cellcomtvassignment.view.adapters.OnMovieClickedListener
-import com.example.cellcomtvassignment.view.fragments.MovieDetails
 import com.example.cellcomtvassignment.view.fragments.MovieDetails.Companion.MOVIE_ID
-import com.example.cellcomtvassignment.view.fragments.MoviesListFragment
 
 class MoviesMainActivity : AppCompatActivity(), OnMovieClickedListener {
     private lateinit var mBindingMoviesMainActivity: ActivityMoviesListBinding
+    private lateinit var navController: NavController
+    var isSignInFragment = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBindingMoviesMainActivity = ActivityMoviesListBinding.inflate(layoutInflater)
@@ -24,7 +22,7 @@ class MoviesMainActivity : AppCompatActivity(), OnMovieClickedListener {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.moviesContainer) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         NavigationUI.setupWithNavController(
             mBindingMoviesMainActivity.bottomNavigationView,
             navController
@@ -32,18 +30,24 @@ class MoviesMainActivity : AppCompatActivity(), OnMovieClickedListener {
     }
 
     fun showMoviesListFragment() {
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, MoviesListFragment()).commit()
+        onBackPressed()
+    }
+
+    override fun onBackPressed() {
+        if (isSignInFragment) {
+            ActivityCompat.finishAffinity(this)
+            finish()
+        } else {
+            super.onBackPressed()
+            isSignInFragment = true
+        }
     }
 
     override fun showMoviesDetailsFragment(movieId: Int?) {
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val fragment = MovieDetails()
         val bundle = Bundle()
         movieId?.let { bundle.putInt(MOVIE_ID, it) }
-        fragment.arguments = bundle
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.moviesContainer, fragment).addToBackStack(null).commit()
+        navController.navigate(R.id.movieDetailsFragment,bundle)
+        isSignInFragment = false
+
     }
 }

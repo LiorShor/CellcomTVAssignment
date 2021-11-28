@@ -5,21 +5,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cellcomtvassignment.model.Movie
 import com.example.cellcomtvassignment.model.MoviesRepository
+import com.example.cellcomtvassignment.view.fragments.MoviesListFragment.Companion.POPULAR
 
 class MoviesListViewModel : ViewModel() {
     var mMoviesList = MutableLiveData<List<Movie>>()
     private lateinit var mMoviesRepository: MoviesRepository
     fun init(){
         mMoviesRepository = MoviesRepository.getInstance()!!
-        mMoviesList = mMoviesRepository.getMoviesList()
+        mMoviesList = mMoviesRepository.getMoviesList(POPULAR)
     }
 
     fun isDataChanged(): LiveData<Boolean?> {
         return mMoviesRepository.isDataChanged
     }
 
-    fun nextPage() {
+    fun nextPage(category: String) {
         mMoviesRepository.pageCounter++
-        mMoviesRepository.getMoviesList()
+        getData(category)
+    }
+
+    fun getData(category: String){
+        mMoviesRepository.getMoviesList(category)
     }
 }
