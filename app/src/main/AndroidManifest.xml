@@ -12,11 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CellcomTVAssignment">
         <activity
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:name=".view.activities.MoviesMainActivity"
             android:exported="false" />
         <activity
-            android:screenOrientation="fullSensor"
             android:name=".view.activities.MainActivity"
             android:exported="true">
             <intent-filter>

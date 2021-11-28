@@ -1,7 +1,7 @@
 package com.example.cellcomtvassignment.model
 
 class Movies {
-    var mMoviesMap = HashMap<Int?, Movie>()
+    private var mMoviesMap = HashMap<Int?, Movie>()
 
     fun addListOfMoviesToMap(moviesList : List<Movie>?)
     {
@@ -13,10 +13,6 @@ class Movies {
 
     private fun addMovieToMap(movie: Movie) {
         mMoviesMap[movie.id] = movie
-    }
-    fun setMoviesMap(map:HashMap<Int?, Movie>)
-    {
-        mMoviesMap = map
     }
 
     fun findMovieById(movieId: Int?): Movie {

@@ -15,4 +15,14 @@
         android:name="com.example.cellcomtvassignment.view.fragments.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" />
+    <fragment
+        android:id="@+id/movieDetailsFragment"
+        android:name="com.example.cellcomtvassignment.view.fragments.MovieDetails"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_moviesListFragment"
+            app:destination="@id/moviesListFragment" />
+
+    </fragment>
 </navigation>

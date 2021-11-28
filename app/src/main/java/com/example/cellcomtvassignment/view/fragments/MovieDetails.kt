@@ -52,10 +52,10 @@ class MovieDetails : Fragment() {
         mFragmentMovieDetailsBinding.favoritesImageButton.setOnClickListener {
             if (movie?.id?.let { it1 -> movieDetailsViewModel.isInFavorite(it1) } == false) {
                 mFragmentMovieDetailsBinding.favoritesImageButton.setImageResource(R.drawable.ic_full_star)
-                movie.id.let { it1 -> movieDetailsViewModel.addMovieToFavorites(it1) }
+                movie.id.let { movieDetailsViewModel.addMovieToFavorites(movie) }
             } else {
                 mFragmentMovieDetailsBinding.favoritesImageButton.setImageResource(R.drawable.ic_empty_star)
-                movie?.id?.let { it1 -> movieDetailsViewModel.removeMovieFromFavorites(it1) }
+                movie?.id?.let { movieDetailsViewModel.removeMovieFromFavorites(movie) }
             }
         }
         mFragmentMovieDetailsBinding.backButton.setOnClickListener {

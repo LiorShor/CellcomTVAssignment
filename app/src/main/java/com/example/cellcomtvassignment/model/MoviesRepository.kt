@@ -2,7 +2,7 @@ package com.example.cellcomtvassignment.model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.Deferred
+import com.example.cellcomtvassignment.view.fragments.MoviesListFragment.Companion.POPULAR
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -11,9 +11,8 @@ import java.util.*
 
 class MoviesRepository {
 
-    //TODO: delete the clear of map and make new instance of list. map always stays 
     val movies = Movies()
-    var currentCategory: String = "Popular"
+    private var currentCategory: String = POPULAR
     var pageCounter = 1
     val isDataChanged: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
     var moviesList: LinkedList<Movie>? = LinkedList()
@@ -40,7 +39,6 @@ class MoviesRepository {
             try {
                 if (currentCategory != category) {
                     pageCounter = 1
-                    movies.mMoviesMap.clear()
                     currentCategory = category
                 }
                 val movieResponse: MovieResponse = when (category) {
@@ -69,5 +67,4 @@ class MoviesRepository {
         data.value = moviesList
         return data
     }
-
 }

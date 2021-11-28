@@ -47,12 +47,11 @@ class MoviesListFragment : Fragment() {
         moviesRecyclerView.layoutManager = GridLayoutManager(context, 3)
         mMoviesListViewModel.isDataChanged().observe(viewLifecycleOwner, { result ->
             if (result == true)
-                mMoviesListViewModel.mMoviesList.value?.let { moviesAdapter?.setStatusesList(it) }
+                mMoviesListViewModel.mMoviesList.value?.let { moviesAdapter?.setMoviesList(it) }
         })
         mMoviesListFragmentBinding.toggleButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             val button: MaterialButton = mMoviesListFragmentBinding.toggleButtonGroup.findViewById(checkedId)
-            if (isChecked){
-            } else {
+            if (!isChecked){
                 //Something is unchecked, we need to make sure that all the buttons are not un-selected
                 if(-1 == group.checkedButtonId){
                     //All buttons are unselected

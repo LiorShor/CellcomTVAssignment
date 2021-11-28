@@ -8,37 +8,41 @@ import com.example.cellcomtvassignment.database.DatabaseHandler
 import com.example.cellcomtvassignment.model.Movie
 import com.example.cellcomtvassignment.model.MoviesRepository
 
-class MovieDetailsViewModel(application: Application) : AndroidViewModel(application){
+class MovieDetailsViewModel(application: Application) : AndroidViewModel(application) {
     private val context by lazy { getApplication<Application>().applicationContext }
-    private val databaseHandler : DatabaseHandler = DatabaseHandler(context)
-    private lateinit var mMoviesRepository:MoviesRepository
-    private var favoriteMoviesList = MutableLiveData<Set<Int>>()
-    private var favoriteMovies=HashSet<Int>()
-    fun init(){
+    private val databaseHandler: DatabaseHandler = DatabaseHandler(context)
+    private lateinit var mMoviesRepository: MoviesRepository
+    private var favoriteMoviesList = MutableLiveData<HashMap<Int, Movie>>()
+    private var favoriteMovies = HashMap<Int, Movie>()
+    fun init() {
         mMoviesRepository = MoviesRepository.getInstance()!!
         favoriteMoviesList = databaseHandler.getFavoritesList()
-        favoriteMovies = databaseHandler.readMoviesFromDatabase() as HashSet<Int>
+        favoriteMovies = databaseHandler.readMoviesFromDatabase()
     }
 
-    fun getMovieById(id : Int) : Movie
-    {
-        return mMoviesRepository.movies.findMovieById(id)
-    }
-    fun addMovieToFavorites(movieId : Int)
-    {
-        favoriteMovies.add(movieId)
-        databaseHandler.addMovieToFavorites(movieId)
-    }
-
-    fun removeMovieFromFavorites(movieId : Int){
-        favoriteMovies.remove(movieId)
-        databaseHandler.removeMovieFromFavorites(movieId)
+    fun getMovieById(id: Int): Movie {
+        val movie : Movie = if (favoriteMovies[id] != null) {
+            favoriteMovies[id]!!
+        } else {
+            mMoviesRepository.movies.findMovieById(id)
+        }
+        return movie
     }
 
-    fun isInFavorite(movieId: Int) : Boolean
-    {
+    fun addMovieToFavorites(movie: Movie) {
+        movie.id?.let { favoriteMovies.put(it, movie) }
+        databaseHandler.addMovieToFavorites(movie)
+    }
+
+    fun removeMovieFromFavorites(movie: Movie) {
+        favoriteMovies.remove(movie.id)
+        movie.id?.let { databaseHandler.removeMovieFromFavorites(it) }
+    }
+
+    fun isInFavorite(movieId: Int): Boolean {
         return favoriteMovies.contains(movieId)
     }
+
     fun isFavoritesListChanged(): LiveData<Boolean> {
         return mMoviesRepository.isDataChanged
     }

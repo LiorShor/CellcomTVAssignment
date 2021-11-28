@@ -57,7 +57,7 @@ class MoviesAdapter(private val mOnMovieClickedListener: OnMovieClickedListener,
         notifyItemRangeRemoved(0, size)
     }
 
-    fun setStatusesList(movies: List<Movie>) {
+    fun setMoviesList(movies: List<Movie>) {
         val size = itemCount
         mMoviesList.addAll(movies)
         notifyItemRangeInserted(size, itemCount)
